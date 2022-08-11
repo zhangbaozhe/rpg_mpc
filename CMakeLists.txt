@@ -82,7 +82,7 @@ target_link_libraries(mpc_controller
 
 # make an executable
 cs_install()
-cs_export()
+# cs_export()
 
 cs_add_executable(mpc_controller_node
   test/mpc_node.cpp)
@@ -105,4 +105,24 @@ endif(catkin_LIBRARIES MATCHES "autopilot")
 
 cs_install()
 
-cs_export()
+# cs_export()
+# Just copied below from catkin_simple, and modified the `INCLUDE_DIRS`
+cmake_parse_arguments(CS_PROJECT
+  "" "" "INCLUDE_DIRS;LIBRARIES;CATKIN_DEPENDS;DEPENDS;CFG_EXTRAS"
+  ${ARGN})
+
+set(${PROJECT_NAME}_CATKIN_RUN_DEPENDS)
+foreach(dep ${${PROJECT_NAME}_RUN_DEPENDS})
+  find_package(${dep} QUIET)
+  if(${dep}_FOUND_CATKIN_PROJECT)
+    list(APPEND ${PROJECT_NAME}_CATKIN_RUN_DEPENDS ${dep})
+  endif()
+endforeach()
+
+catkin_package(
+  INCLUDE_DIRS ${${PROJECT_NAME}_LOCAL_INCLUDE_DIR} ${CS_PROJECT_INCLUDE_DIRS} model/quadrotor_mpc_codegen/ externals/qpoases externals/qpoases/INCLUDE externals/qpoases/SRC
+  LIBRARIES ${${PROJECT_NAME}_LIBRARIES} ${CS_PROJECT_LIBRARIES}
+  CATKIN_DEPENDS ${${PROJECT_NAME}_CATKIN_RUN_DEPENDS} ${CS_PROJECT_CATKIN_DEPENDS}
+  DEPENDS ${CS_PROJECT_DEPENDS}
+  CFG_EXTRAS ${CS_PROJECT_CFG_EXTRAS}
+)
