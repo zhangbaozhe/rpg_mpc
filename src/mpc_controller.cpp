@@ -260,7 +260,7 @@ bool MpcController<T>::publishPrediction(
     ros::Time& time) {
   nav_msgs::Path path_msg;
   path_msg.header.stamp = time;
-  path_msg.header.frame_id = "world";
+  path_msg.header.frame_id = "map";
   geometry_msgs::PoseStamped pose;
   T dt = mpc_wrapper_.getTimestep();
 
